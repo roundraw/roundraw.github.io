@@ -12,7 +12,6 @@ D.chatPort = 2000;
 D.mainChat = "-1001609661635";
   F.bot.onText(/\/returl (.+)/, (msg, match) => {
     if (msg.chat.id + ""  == D.mainChat) {
-console.log('aaa');
       var url = match[1];
       var http = require('http'),
         https = require('https');
