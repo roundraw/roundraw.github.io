@@ -1,0 +1,41 @@
+{
+  "name": "chat",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "ejs": "*",
+    "exec": "^0.2.1",
+    "express-session": "*",
+    "md5": "*",
+    "mongoose": "^6.0.13",
+    "node-telegram-bot-api": "*",
+    "nodemailer": "*",
+    "password-generator": "*",
+    "spawn-npm-install": "^1.2.0",
+    "strip-final-newline": "^3.0.0",
+    "ws": "*",
+    "ytdl-core": "*"
+  },
+  "devDependencies": {
+    "canvas": "^2.9.0",
+    "disallowed-word-filter": "^1.0.2",
+    "execa": "^5.1.1",
+    "flexeca": "^0.0.1",
+    "http-close": "^1.0.0",
+    "http-terminator": "^3.0.3",
+    "image-search-engine": "^1.2.1",
+    "imagescript": "^1.2.9",
+    "img": "^3.0.3",
+    "jimp": "^0.16.1",
+    "nedb": "^1.8.0",
+    "quote-stream": "^1.0.2",
+    "rand": "^0.0.4",
+    "random-english-words": "^0.1.0",
+    "random-id": "^1.0.4",
+    "random-word-generator": "^0.9.9",
+    "yandex-images": "^1.0.7"
+  }
+}
