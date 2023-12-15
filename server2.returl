@@ -1,0 +1,1038 @@
+/return
+F.bot.onText(/костыль/i, (msg) => {
+F.bot.sendMessage(msg.chat.id, "👆", {reply_to_message_id: msg.message_id})
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/list/, (msg) => {
+F.bot.sendMessage(msg.chat.id, "_").then((msg) => {
+F.bot.editMessageText(F.genList(msg), {chat_id: msg.chat.id, message_id: msg.message_id})
+if (D.listMsg) F.bot.deleteMessage(msg.chat.id, D.listMsg.message_id);
+D.listMsg = msg
+});
+F.bot.deleteMessage(msg.chat.id, msg.message_id);
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/flist/, (msg) => {
+F.bot.sendMessage(msg.chat.id, "_").then((msg) => {
+F.bot.editMessageText(F.genFList(msg), {chat_id: msg.chat.id, message_id: msg.message_id})
+if (D.listFMsg) F.bot.deleteMessage(msg.chat.id, D.listFMsg.message_id);
+D.listFMsg = msg
+})
+F.bot.deleteMessage(msg.chat.id, msg.message_id)
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/vcb/, (msg) => {
+const opts = msg.text.slice(1).split('@')[0].split('_');
+const lner = F.bot._textRegexpCallbacks[opts[1]];
+F.bot.sendMessage(msg.chat.id, "/del_" + (msg.message_id+1) + "\n/bset_C_" + opts[1] + "_" + ((B.C[opts[1]]) ? "on" : "off") + "_" + (msg.message_id+1) + "\n/ret" + "urn\nF.bot.onText(" + lner.regexp + ", " + lner.callback.toString() + "); undefined");
+F.bot.deleteMessage(msg.chat.id, msg.message_id)
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/vd/, (msg) => {
+const opts = msg.text.slice(1).split('@')[0].split('_');
+if (typeof opts[2] != "undefined")
+F.bot.sendMessage(msg.chat.id,"/del_" + (msg.message_id+1) + "\n/bset_D_" + opts[1] + "_" + ((B.D[opts[1]]) ? "on" : "off") + "_" + (msg.message_id+1) + "\n/ret" + "urn\nD." + opts[1] + '.' + opts[2] + " = " + JSON.stringify(D[opts[1]][opts[2]]))
+else F.bot.sendMessage(msg.chat.id,"/del_" + (msg.message_id+1) + "\n/bset_D_" + opts[1] + "_" + ((B.D[opts[1]]) ? "on" : "off") + "_" + (msg.message_id+1) + "\n/ret" + "urn\nD." + opts[1] + " = " + JSON.stringify(D[opts[1]]) + "; undefined");
+F.bot.deleteMessage(msg.chat.id, msg.message_id)
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/folist/, (msg) => {
+F.bot.sendMessage(msg.chat.id, "_").then((msg) => {
+F.bot.editMessageText(F.genFOList(msg), {chat_id: msg.chat.id, message_id: msg.message_id})
+if (D.listFOMsg) F.bot.deleteMessage(msg.chat.id, D.listFOMsg.message_id);
+D.listFOMsg = msg
+})
+F.bot.deleteMessage(msg.chat.id, msg.message_id)
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/rmrg/, (msg) => {
+if (msg.chat.id == D.mainChat) {
+const opts = msg.text.slice(1).split('@')[0].split('_');
+delete F.bot._textRegexpCallbacks[opts[1]];
+F.bot.editMessageText(F.genList(D.listMsg), {chat_id: msg.chat.id, message_id: D.listMsg.message_id});
+F.bot.deleteMessage(msg.chat.id, msg.message_id)
+}
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/ifnpm/, (msg, match) => {
+if (msg.chat.id == D.mainChat) {
+try {
+D.toInstall = msg.text.split(' ')[1];
+D.toF = msg.text.split(' ')[2];
+/ #installModule /
+require('spawn-npm-install')([D.toInstall, 'quote-stream'],
+{ saveDev: true }, 
+function(err) {
+if (err) { 
+F.bot.sendMessage(msg.chat.id, 
+"Could not install:\n" + err.message) 
+} else { 
+F.bot.sendMessage(msg.chat.id, "Installed.");
+F[D.toF] = require(D.toInstall)
+}
+})
+} catch(err) {
+F.bot.sendMessage(msg.chat.id, err.message)
+}
+}
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/dash/, (msg, match) => {
+if (msg.chat.id == D.mainChat) {
+if (!F.sp) F.sp = {};
+D.toDelete = []
+D.dashSpell = msg.text;
+D.dashSpell = D.dashSpell.split(match)[1];
+F.delLogs = (bmsg) => {
+D.i = 0;
+while (D.i < D.toDelete.length) {
+F.bot.deleteMessage(bmsg.chat.id, D.toDelete[D.i]);
+delete D.toDelete[D.i];
+D.i++
+}
+if (bmsg) D.toDelete.push(bmsg.message_id);
+}
+(async () => {  
+try {
+const {stdout} = await F.pipeStdout();
+F.bot.sendMessage(msg.chat.id, stdout).then(F.delLogs)
+} catch(err) {
+const bmsg = F.bot.sendMessage(msg.chat.id, err.message).then(F.delLogs)
+}
+})();
+}
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/key_del/, (msg) => { F.bot.sendMessage(msg.chat.id, "Клавиатура убрана", {reply_markup: {remove_keyboard: true}})
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/slist/, (msg) => {
+F.bot.sendMessage(msg.chat.id, "_").then((msg) => {
+F.bot.editMessageText(F.genSList(msg), {chat_id: msg.chat.id, message_id: msg.message_id})
+if (D.listSMsg) F.bot.deleteMessage(msg.chat.id, D.listSMsg.message_id);
+D.listSMsg = msg
+})
+F.bot.deleteMessage(msg.chat.id, msg.message_id)
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/vs/, (msg) => {
+const opts = msg.text.slice(1).split('@')[0].split('_');
+const lner = F.bot._textRegexpCallbacks[opts[1]];
+ F.bot.sendMessage(msg.chat.id,"/del_" + (msg.message_id+1) + "\n/bset_S_" + opts[1] + "_" + ((B.S[opts[1]]) ? "on" : "off") + "_" + (msg.message_id+1) + "\n/ret" + "urn\nS." + opts[1] + " = " + S[opts[1]].toString());
+F.bot.deleteMessage(msg.chat.id, msg.message_id)
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/bset/, (msg) => {
+if (msg.chat.id == D.mainChat) {
+const opts = msg.text.slice(1).split('@')[0].split('_');
+var o1 = opts[1];
+var listmsg = (o1 == "C") ? D.listMsg : ((o1 == "F") ? D.listFMsg : ((o1 == "D") ? D.listDMsg : D.listSMsg));
+var genf = (o1 == "C") ? F.genList : ((o1 == "F") ? F.genFList : ((o1 == "D") ? F.genDList : F.genSList));
+
+if (opts[3] == "off") B[opts[1]][opts[2]] = true;
+else delete B[opts[1]][opts[2]];
+F.bot.editMessageText(genf(listmsg), {chat_id: msg.chat.id, message_id: listmsg.message_id});
+F.bot.deleteMessage(msg.chat.id, msg.message_id)
+if (opts[4]) F.bot.deleteMessage(msg.chat.id, opts[4])
+}
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/retua{0}rn/, (msg, match) => {
+   if (msg.chat.id == D.mainChat) {
+msg.text = msg.text.replaceAll('”', '"');
+    msg.text.split(match).forEach((item, i, arr) => {
+      i%2 && F.bot.sendMessage(msg.chat.id, 
+      JSON.stringify(eval('try {eval(item)} catch(e) {e.message}')), {
+        reply_to_message_id: msg.message_id
+      });
+    })
+    }
+  }); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/del/, (msg) => {
+const opts = msg.text.slice(1).split('@')[0].split('_');
+F.bot.deleteMessage(msg.chat.id, opts[1])
+F.bot.deleteMessage(msg.chat.id, msg.message_id)
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/keyboard/, (msg) => {
+    if (typeof D.text != "string") D.text = "";
+    const opts = {
+        reply_markup: JSON.stringify({
+            keyboard: (D.charsetType == "num") ? (D.numCharset == "sym") ?
+                (D.numSymCharset == "alpha") ? D.charsets.numSymAlpha :
+                D.charsets.numSymBeta : D.charsets.numNum : (D.charset == "en") ?
+                D.charsets.symEn : D.charsets.symRu
+        })
+    };
+    F.bot.sendMessage(msg.chat.id, "#ТегКлавиатур��", opts).then((msg) => {
+        D.tagMsg = msg;
+        F.bot.sendMessage(msg.chat.id, "|", {
+            reply_to_message_id: msg.message_id
+        }).then((msg) => {
+            D.botMsg = msg;
+            D.replyListenerId = F.bot.onReplyToMessage(msg.chat.id, D.tagMsg.message_id, F.keyboardReplyHandler)
+        });
+    });
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/dlist/, (msg) => {
+F.bot.sendMessage(msg.chat.id, "_").then((msg) => {
+F.bot.editMessageText(F.genDList(msg), {chat_id: msg.chat.id, message_id: msg.message_id})
+if (D.listDMsg) F.bot.deleteMessage(msg.chat.id, D.listDMsg.message_id);
+D.listDMsg = msg
+})
+F.bot.deleteMessage(msg.chat.id, msg.message_id)
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/vf/, (msg) => {
+const opts = msg.text.slice(1).split('@')[0].split('_');
+const lner = F.bot._textRegexpCallbacks[opts[1]];
+F.bot.sendMessage(msg.chat.id,"/del_" + (msg.message_id+1) + "\n/b" + "set_F_" + opts[1] + "_" + ((B.F[opts[1]]) ? "on" : "off") + "_" + (msg.message_id+1) + "\n/ret" + "urn\nF." + opts[1] + " = " + F[opts[1]].toString());
+F.bot.deleteMessage(msg.chat.id, msg.message_id)
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/broadcast/, (msg, match) => {
+var date = new Date;
+var message = JSON.stringify({
+msg: msg.text.split('/broadcast')[1],
+nickname: msg.from.first_name + ' ' + ((msg.from.last_name) ? msg.from.last_name : ''),
+client: 'zero',
+date: Date.parse(date)
+})
+F.wss.broadcast(message);
+       F.addToBase(message);
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/chatid/, (msg) => { F.bot.sendMessage(msg.chat.id, msg.chat.id);
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/start (.+)/, (msg, match) => {
+var name = msg.from.first_name + ' ' + ((msg.from.last_name) ? msg.from.last_name : '')
+var user_profile = F.bot.getUserProfilePhotos(msg.from.id);
+        user_profile.then(function (res) {
+            var file_id = res.photos[0][0].file_id;
+            var file = F.bot.getFile(file_id);
+            file.then(function (result) {
+                var file_path = result.file_path;
+                var photo_url = 'https://api.telegram.org/file/bot'+ F.bot.token + '/' + file_path;
+var id = match[1].substr(0,20);
+F.download(photo_url, 'files/avatars/' + id + '.png').then(() => {
+                F.bot.sendMessage(msg.chat.id, 'Вы успешно зашли. Добро пожаловать в Roundraw!')
+new User({
+nickname: name,
+id: id
+}).save();
+
+})
+            });
+        });
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/noretua{0}rn/, (msg, match) => {
+   if (msg.chat.id == D.mainChat) {
+
+    msg.text.split(match).forEach((item, i, arr) => {
+      i%2 && F.bot.sendMessage(msg.chat.id, 
+      JSON.stringify(eval('try {eval("function aa() {" + item + "}; aa()")} catch(e) {e.message}')), {
+        reply_to_message_id: msg.message_id
+      });
+    })
+    }
+  }); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/привет/, (msg) => {
+F.bot.sendMessage(msg.chat.id,
+'*Приветствую, ' + '[' + msg.from.first_name + '](' + 'tg://user?id=' + msg.from.id + ')*\nКак ваше настроение?'
+, {parse_mode:'MarkdownV2'})
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/ктоя/i, (msg) => { F.bot.sendMessage(msg.chat.id, "Пользователь найден!", {reply_markup: {inline_keyboard: [[{text: msg.from.first_name + ((!msg.from.last_name) ? '' : ' ' + msg.from.last_name) , url: "https://t.me/" + msg.from.username}]]}})
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/супер/i, (msg) => { F.bot.sendMessage(msg.chat.id, "Пользователь найден!", {reply_markup: {inline_keyboard: [
+[
+{text: "С", callback_data:"aa"},
+{text: "У", callback_data:"aa"},
+{text: "П", callback_data:"aa"},
+{text: "Е", callback_data:"aa"},
+{text: "Р", callback_data:"aa"}
+],
+[
+{text: "К", callback_data:"aa"},
+{text: "О", callback_data:"aa"},
+{text: "С", callback_data:"aa"},
+{text: "Т", callback_data:"aa"},
+{text: "Ы", callback_data:"aa"},
+{text: "Л", callback_data:"aa"},
+{text: "Ь", callback_data:"aa"}
+]
+]}})
+}); undefined 
+/return
+
+
+/return
+F.figureProcess = function(message, wbid) {
+var attrs = message.toString().split('&');
+if (attrs[0] == 'new' && attrs[1] == 'Line') {
+attrs[3] = JSON.parse(attrs[3]);
+attrs[3].id = attrs[2];
+new F.wb[wbid](attrs[3]).save();
+}
+if (attrs[0] == 'del') {
+F.wb[wbid].deleteOne({ id: attrs[1] }, function (err) { if (err) F.bot.sendMessage(-1001609661635, err) });
+}
+if (attrs[0] == 'change') {
+attrs[2] = JSON.parse(attrs[2]);
+F.wb[wbid].updateOne({ id: attrs[1] }, attrs[2], function (err) { if (err) F.bot.sendMessage(-1001609661635, err) });
+}
+}
+/return
+
+
+/return
+F.createwb = function(wbid) {
+F.ws = require("ws").Server;
+F.wbws[wbid] = new F.ws({noServer: true});
+F.wbws[wbid].on('connection', function connection(socket) {
+    socket.on('message', function(message) {
+       F.wbws[wbid].broadcast(message);
+       F.figureProcess(message, wbid);
+    });
+
+});
+F.wbws[wbid].broadcast = function broadcast(msg) {
+   F.wbws[wbid].clients.forEach(function each(client) {
+       client.send(msg);
+    });
+};
+var absent = !0;
+for (var key in F.mongoose.connection.models) {
+if (key == wbid) absent = !1;
+}
+if (absent) {
+F.wb[wbid] = F.mongoose.model(wbid, {
+id: {
+type: String,
+default: 'id'
+},
+x: {
+type: Number,
+default: 0
+},
+y: {
+type: Number,
+default: 0
+},
+strokeWidth: {
+type: Number,
+default: 5
+},
+segments: {
+type: Array,
+default: []
+},
+shadowColor: {
+type: String,
+default: 'black'
+},
+shadowWidth: {
+type: Number,
+default: 0
+},
+shadowX: {
+type: Number,
+default: 0
+},
+shadowY: {
+type: Number,
+default: 0
+},
+strokeColor: {
+type: String,
+default: 'black'
+},
+opacity: {
+type: Number,
+default: 1
+},
+color: {
+type: String,
+default: 'rgba(0,0,0,0)'
+},
+lineCap: {
+type: String,
+default: 'round'
+},
+lineJoin: {
+type: String,
+default: 'round'
+},
+fontWidth: {
+type: Number,
+default: 0
+},
+font: {
+type: String,
+default: 'serif'
+}
+})
+}
+}
+/return
+
+
+/return
+F.host = function (req, res) {
+    var reqpath = req.url.toString().split('?')[0];
+    if (reqpath.includes('wb_')) {
+    var wbid = reqpath.split('/')[1];
+    if (F.wb[wbid]) {
+    F.wb[wbid].find({}, function(err, messages) {
+var arr = []; messages.forEach(function(record) {
+       arr.push(record)
+    });
+res.end(JSON.stringify(arr))
+  });
+  } else {
+res.statusCode = 404;
+res.end('Not found')
+}
+return
+}
+if (reqpath == '/newWhiteboard') {
+var id = 'wb_' + Math.random().toString().slice(2);
+F.createwb(id);
+res.end(id);
+return;
+}
+if (reqpath == '/server') {
+res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+res.end(F.genBackup());
+return;
+}
+if (reqpath == '/chatclients') {
+var num = 0;
+F.wss.clients.forEach(function each(client) {
+       num++
+    });
+res.end(num.toString());
+return;
+}
+if (reqpath.includes('/users/')) {
+var id = reqpath.split('/').reverse()[0];
+User.findOne({id: id}, (err, user) => {
+if (user && user.nickname) res.end(user.nickname);
+else {
+res.statusCode = 404;
+res.end('User not found');
+}
+});
+return;
+}
+if (reqpath.includes('/messages')) {
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    var page = (reqpath.includes('&')) ? reqpath.split('&')[1] : 1;
+Message.find({}, function(err, messages) {
+c = err;
+var msgarr = [];
+var i = messages.length - 60 * page;
+for (i = (i < 0) ? 0 : i; i < messages.length - (-60 + page * 60); i++) {
+       msgarr.push({nickname: messages[i].nickname, msg: messages[i].msg, date: messages[i].date, client: messages[i].client})
+    }
+res.end(JSON.stringify(msgarr))
+  });
+    return
+    }
+
+    if (req.method !== 'GET') {
+        res.statusCode = 501;
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        return res.end('Method not implemented');
+    }
+    var file = path.join(dir, reqpath.replace(/\/$/, '/index.html'));
+    if (file.indexOf(dir + path.sep) !== 0) {
+        res.statusCode = 403;
+        res.setHeader('Content-Type', 'text/plain');
+        return res.end('Forbidden');
+    }
+    var s = fs.createReadStream(file);
+    var type = D.mime[path.extname(file).slice(1)] || 'text/plain';
+    s.on('open', function () {
+        res.setHeader('Content-Type', type);res.setHeader('Content-Type', type + '; charset=utf-8');
+        s.pipe(res);
+    });
+    s.on('error', function () {
+        res.setHeader('Content-Type', 'text/plain');
+        res.statusCode = 404;
+        res.end('Not found');
+    });
+}
+/return
+
+
+/return
+F.addToBase = function(message)  {
+var obj = JSON.parse(message);
+new Message({
+nickname: obj.nickname.toString().substr(0, 64),
+msg: obj.msg.toString().substr(0, 4096),
+date: obj.date.toString().substr(0, 15),
+client: obj.client.toString().substr(0, 20)
+}).save();
+    }
+/return
+
+
+/return
+F.genList = (msg) => {
+var resp = "/list\n";
+resp += (msg) ? "/del_" + (msg.message_id) + "\n" : "";
+resp += "/rmrg_\n";
+F.bot._textRegexpCallbacks.forEach((it, i, arr) => {
+if (it.regexp)
+resp += (B.C[i] ? "[-]" : "[+]") + " /vcb_" + i + " " + "/rmrg_" + i + " " + it.regexp+ "\n"
+})
+return resp
+}
+/return
+
+
+/return
+F.genFList = (msg) => {
+var resp = "/flist\n";
+resp += (msg) ? "/del_" + (msg.message_id) + "\n" : "";
+for (var key in F) {
+resp += (B.F[key] ? "[-]" : "[+]") +  "/vf_" + key + "\n"
+}
+return resp
+}
+/return
+
+
+/return
+F.rand = function randomId(len, pattern) {
+  if (!len) len = 30;
+  if (!pattern) pattern = 'aA0';
+
+  var chars = '';
+
+  pattern.split('').forEach((a) => {
+    if (!isNaN(parseInt(a))) {
+      chars += possibilities.numbers;
+    } else if (/[a-z]/.test(a)) {
+      chars += possibilities.lowerCased;
+    } else if (/[A-Z]/.test(a)) {
+      chars += possibilities.capitals;
+    } else {
+      chars += possibilities.special;
+    }
+  });
+
+  var result = '';
+
+  for (var i = 0; i < len; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length)); 
+  }
+
+  return result;
+}
+/return
+
+
+/return
+F.download = function(url, dest){
+  var file = fs.createWriteStream(dest);
+  return new Promise((resolve, reject) => {
+    var responseSent = false;
+    https.get(url, response => {
+      response.pipe(file);
+      file.on('finish', () =>{
+        file.close(() => {
+          if(responseSent)  return;
+          responseSent = true;
+          resolve();
+        });
+      });
+    }).on('error', err => {
+        if(responseSent)  return;
+        responseSent = true;
+        reject(err);
+    });
+  });
+}
+/return
+
+
+/return
+F.keyboardReplyHandler = (usrMsg) => {
+    switch (usrMsg.text) {
+        case "⚉":
+            D.charset = (D.charset == "en") ? "ru" : "en";
+            break;
+        case "#1?":
+            if (D.charsetType == "num") D.numCharset = "sym";
+            D.charsetType = "num";
+            D.numCharset = "sym";
+            D.numSymCharset = "alpha"
+            break;
+        case "ABC":
+            D.charsetType = "sym";
+            break;
+        case "123":
+            D.charsetType = "num";
+            D.numCharset = "num";
+            break;
+        case "=<":
+            D.charsetType = "num";
+            D.numSymCharset = "beta";
+            D.numCharset = "sym";
+            break;
+        case "⌫":
+            D.text = D.text.slice(0, -1);
+            break;
+        case "␣":
+            D.text += " ";
+            break;
+        case "⏎":
+            D.text += "\n";
+            break;
+        default:
+            if (D.text[D.text.length - 1] == "⇧") D.text = D.text.slice(0, -1) + usrMsg.text.toUpperCase();
+            else D.text += usrMsg.text;
+    }
+    switch (usrMsg.text) {
+        case "⚉":
+        case "#1?":
+        case "ABC":
+        case "123":
+        case "=<":
+            F.bot.deleteMessage(D.tagMsg.chat.id, D.tagMsg.message_id);
+            F.bot.deleteMessage(D.botMsg.chat.id, D.botMsg.message_id);
+            F.bot.removeReplyListener(D.replyListenerId);
+            F.keyboardRender(usrMsg);
+            break;
+        default:
+            F.bot.editMessageText(D.text + "|", {
+                chat_id: D.botMsg.chat.id,
+                message_id: D.botMsg.message_id
+            }).catch((err) => {
+                F.bot.sendMessage(usrMsg.chat.id, "#Баг: " + JSON.stringify(err)).then((msg) => {
+                    setTimeout(() => {F.bot.deleteMessage(msg.chat.id, msg.message_id)}, 1500)
+                });
+            });
+    }
+    F.bot.deleteMessage(usrMsg.chat.id, usrMsg.message_id);
+}
+/return
+
+
+/return
+F.keyboardRender = (msg) => {
+    if (typeof D.text != "string") D.text = "";
+    const opts = {
+        reply_markup: JSON.stringify({
+            keyboard: (D.charsetType == "num") ? (D.numCharset == "sym") ?
+                (D.numSymCharset == "alpha") ? D.charsets.numSymAlpha :
+                D.charsets.numSymBeta : D.charsets.numNum : (D.charset == "en") ?
+                D.charsets.symEn : D.charsets.symRu
+        })
+    };
+    F.bot.sendMessage(msg.chat.id, "#ТегКлавиатуры", opts).then((msg) => {
+        D.tagMsg = msg;
+        F.bot.sendMessage(msg.chat.id, "|", {
+            reply_to_message_id: msg.message_id
+        }).then((msg) => {
+            D.botMsg = msg;
+            D.replyListenerId = F.bot.onReplyToMessage(msg.chat.id, D.tagMsg.message_id, F.keyboardReplyHandler)
+        });
+    });
+}
+/return
+
+
+/return
+F.pipeStdout = () => {
+const sp = F.execa('dash', ['-c', D.dashSpell]);
+D.pid = sp.pid;
+F.sp[D.pid] =  sp;
+F.bot.sendMessage(msg.chat.id, Object.keys(sp.stdout))
+sp.stdout.pipe(F.what);
+return sp
+}
+/return
+
+
+/return
+F.delLogs = (bmsg) => {
+D.i = 0;
+while (D.i < D.toDelete.length) {
+F.bot.deleteMessage(bmsg.chat.id, D.toDelete[D.i]);
+delete D.toDelete[D.i];
+D.i++
+}
+if (bmsg) D.toDelete.push(bmsg.message_id);
+}
+/return
+
+
+/return
+F.genDList = (msg) => {
+var resp = "/dlist\n";
+resp += (msg) ? "/del_" + (msg.message_id) + "\n" : "";
+for (var key in D) {
+if (typeof F[key] == "object")
+for (var keyk in D[key]) {
+resp += "/vd_" + key + '_' + keyk + "\n"
+}
+else resp += (B.D[key] ? "[-]" : "[+]") + " /vd_" + key + "\n"
+}
+return resp
+}
+/return
+
+
+/return
+F.genFOList = (msg) => {
+var resp = "/folist\n";
+resp += (msg) ? "/del_" + (msg.message_id) + "\n" : "";
+for (var key in F) {
+resp += "/vf_" + key + "\n"
+}
+return resp
+}
+/return
+
+
+/return
+F.genBackup = () => {
+var resp = "";
+F.bot._textRegexpCallbacks.forEach((it, i, arr) => {
+if (it.regexp && !B.C[i]) {
+resp += "/ret" + "urn\nF.bot.onText(" + it.regexp + ", " + it.callback.toString() + "); undefined \n/ret" + "urn\n\n\n"
+}
+});
+
+for (var key in F) {
+if (!B.F[key]) resp += "/ret" + "urn\nF." + key + " = " + F[key].toString() + "\n/ret" + "urn\n\n\n"
+}
+
+for (var key in D) {
+if (!B.D[key]) resp += "/ret" + "urn\nD." + key + " = " + JSON.stringify(D[key]) + "; undefined\n/ret" + "urn\n\n\n"
+}
+
+resp += "/ret" + "urn\nB = " + JSON.stringify(B) + 
+"; undefined\n/ret" + "urn\n\n\n"
+
+for (var key in S) {
+if (!B.S[key]) resp += "/ret" + "urn\nS." + key + " = " + S[key].toString() + "\nS." + key + "(); \n/ret" + "urn\n\n\n"
+}
+
+return resp
+}
+/return
+
+
+/return
+F.genSList = (msg) => {
+var resp = "/slist\n";
+resp += (msg) ? "/del_" + (msg.message_id) + "\n" : "";
+for (var key in S) {
+resp += (B.S[key] ? "[-]" : "[+]") +  "/vs_" + key + "\n"
+}
+return resp
+}
+/return
+
+
+/return
+F.deleteScamByDate = function(date, date2) {
+date2 = date2 || Infinity;
+Message.find({}, function(err, messages) {
+for (var i = 0; i < messages.length; i++) {
+if (messages[i].date * 1 >= date * 1 && messages[i].date * 1 <= date2 ) messages[i].remove(() => {});
+}
+  });
+}
+/return
+
+
+/return
+D.port = 80; undefined
+/return
+
+
+/return
+D.chatPort = 2000; undefined
+/return
+
+
+/return
+D.mime = {"html":"text/html","txt":"text/plain","css":"text/css","gif":"image/gif","jpg":"image/jpeg","png":"image/png","svg":"image/svg+xml","js":"application/javascript"}; undefined
+/return
+
+
+/return
+D.charsets = {"numNum":[[{"text":"+"},{"text":"1"},{"text":"2"},{"text":"3"},{"text":"-"}],[{"text":"*"},{"text":"4"},{"text":"5"},{"text":"6"},{"text":"␣"}],[{"text":"/"},{"text":"7"},{"text":"8"},{"text":"9"},{"text":"⌫"}],[{"text":"ABC"},{"text":"#1?"},{"text":","},{"text":"␣"},{"text":"0"},{"text":"."},{"text":"⏎"}]],"numSymAlpha":[[{"text":"1"},{"text":"2"},{"text":"3"},{"text":"4"},{"text":"5"},{"text":"6"},{"text":"7"},{"text":"8"},{"text":"9"},{"text":"0"}],[{"text":"&"},{"text":"#"},{"text":"$"},{"text":"%"},{"text":"_"},{"text":"-"},{"text":"+"},{"text":"("},{"text":")"},{"text":"/"}],[{"text":"=<"},{"text":"@"},{"text":"*"},{"text":" \""},{"text":"'"},{"text":":"},{"text":";"},{"text":"!"},{"text":"?"},{"text":"⌫"}],[{"text":"ABC"},{"text":"123"},{"text":","},{"text":"⬅️"},{"text":"➡️"},{"text":"⬆️"},{"text":"⬇️"},{"text":"⏹"},{"text":"␣"},{"text":"."},{"text":"⏎"}]],"numSymBeta":[[{"text":"1"},{"text":"2"},{"text":"3"},{"text":"4"},{"text":"5"},{"text":"6"},{"text":"7"},{"text":"8"},{"text":"9"},{"text":"0"}],[{"text":"×"},{"text":"÷"},{"text":"^"},{"text":"√"},{"text":"∆"},{"text":"-"},{"text":"+"},{"text":"<"},{"text":">"},{"text":"="}],[{"text":"#1?"},{"text":"α"},{"text":"°"},{"text":"•"},{"text":"|"},{"text":"{"},{"text":"}"},{"text":"["},{"text":"]"},{"text":"⌫"}],[{"text":"ABC"},{"text":"123"},{"text":","},{"text":"⬅️"},{"text":"➡️"},{"text":"⬆️"},{"text":"⬇️"},{"text":"⏹"},{"text":"␣"},{"text":"."},{"text":"⏎"}]],"symEn":[[{"text":"q"},{"text":"w"},{"text":"e"},{"text":"r"},{"text":"t"},{"text":"y"},{"text":"u"},{"text":"i"},{"text":"o"},{"text":"p"}],[{"text":"a"},{"text":"s"},{"text":"d"},{"text":"f"},{"text":"g"},{"text":"h"},{"text":"j"},{"text":"k"},{"text":"l"}],[{"text":"⇧"},{"text":"z"},{"text":"x"},{"text":"c"},{"text":"v"},{"text":"b"},{"text":"n"},{"text":"m"},{"text":"⌫"}],[{"text":"#1?"},{"text":"⚉"},{"text":","},{"text":"⬅️"},{"text":"➡️"},{"text":"⬆️"},{"text":"⬇️"},{"text":"⏹"},{"text":"␣"},{"text":"."},{"text":"⏎"}]],"symRu":[[{"text":"й"},{"text":"ц"},{"text":"у"},{"text":"к"},{"text":"е"},{"text":"н"},{"text":"г"},{"text":"ш"},{"text":"щ"},{"text":"з"},{"text":"х"}],[{"text":"ф"},{"text":"ы"},{"text":"в"},{"text":"а"},{"text":"п"},{"text":"р"},{"text":"о"},{"text":"л"},{"text":"д"},{"text":"ж"},{"text":"э"}],[{"text":"⇧"},{"text":"я"},{"text":"ч"},{"text":"с"},{"text":"м"},{"text":"и"},{"text":"т"},{"text":"ь"},{"text":"б"},{"text":"ю"},{"text":"⌫"}],[{"text":"#1?"},{"text":"⚉"},{"text":","},{"text":"⬅️"},{"text":"➡️"},{"text":"⬆️"},{"text":"⬇️"},{"text":"⏹"},{"text":"␣"},{"text":"."},{"text":"⏎"}]]}; undefined
+/return
+
+
+/return
+D.charset = "en"; undefined
+/return
+
+
+/return
+D.charsetType = "sym"; undefined
+/return
+
+
+/return
+D.numCharset = "sym"; undefined
+/return
+
+
+/return
+D.numSymCharset = "alpha"; undefined
+/return
+
+
+/return
+D.listFOMsg = {"message_id":487884,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1001609661635,"title":"Mon 00:16 roundraw-crutch","username":"roundrawcrutch","type":"supergroup"},"date":1682024619,"text":"_"}; undefined
+/return
+
+
+/return
+D.listSMsg = {"message_id":491167,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1001609661635,"title":"Fri 10:40 roundraw-crutch","username":"roundrawcrutch","type":"supergroup"},"date":1700498310,"text":"_"}; undefined
+/return
+
+
+/return
+B = {"D":{"i":true,"listDMsg":true,"dashSpell":true,"toDelete":true,"replyListenerId":true,"botMsg":true,"tagMsg":true,"listFMsg":true,"toF":true,"toInstall":true,"text":true,"listMsg":true,"mainChat":true},"F":{"imgy":true,"img":true,"fs":true,"wordgen":true,"execa":true,"rwg":true,"wss":true,"ws":true,"mongoose":true,"bot":true,"server":true,"imge":true,"imga":true,"tInt":true,"what":true,"sp":true,"wb":true,"wbws":true,"random-id":true},"S":{},"C":{"0":true,"40":true,"54":true}}; undefined
+/return
+
+
+/return
+S.fatalError = () => {
+process.on('uncaughtException', (err) => { F.bot.sendMessage(msg.chat.id, err.message) });
+}
+S.fatalError(); 
+/return
+
+
+/return
+S.mongodb = () => {
+F.mongoose = require('mongoose');
+F.mongoose.connect('mongodb://noopdie:' + process.env.DBTOKEN.split(':')[1] + '@localhost:27017/admin', function(err, res) {
+  if (err) {
+    F.bot.sendMessage(msg.chat.id, 'ERROR connecting to:. ' + err);
+  } else {
+    F.bot.sendMessage(msg.chat.id, 'Succeeded connected to: ' + err);
+  }
+});
+}
+S.mongodb(); 
+/return
+
+
+/return
+S.server = () => {
+path = require('path');
+http = require('http');
+fs = require('fs');
+dir = path.join('files');
+
+F.server = http.createServer(function(req, res) {
+F.host(req,res)
+});
+F.server.listen(D.port, function () {
+    F.bot.sendMessage(msg.chat.id, 'Listening on http://noopdie.com:80/');
+});
+}
+S.server(); 
+/return
+
+
+/return
+S.wsgive = () => {
+F.wb = {};
+F.wbws = {};
+F.server.on('upgrade', function upgrade(request, socket, head) {
+var reqpath = request.url.toString().split('?')[0];
+var wbid = reqpath.split('/')[1];
+    if (reqpath.includes('wb_')) {
+    F.wbws[wbid].handleUpgrade(request, socket, head, function done(ws) {
+      F.wbws[wbid].emit('connection', ws, request);
+    });
+  } else {
+    socket.destroy();
+  }
+});
+}
+S.wsgive(); 
+/return
+
+
+/return
+S.wsserver = () => {
+F.ws = require("ws").Server;
+F.wss = new F.ws({port:D.chatPort});
+F.wss.on('connection', function connection(socket) {
+    socket.on('message', function(message) {
+       F.wss.broadcast(message);
+       F.addToBase(message);
+    });
+
+});
+F.wss.broadcast = function broadcast(msg) {
+   F.wss.clients.forEach(function each(client) {
+       client.send(msg);
+    });
+};
+}
+S.wsserver(); 
+/return
+
+
+/return
+S.msgmodel = () => {
+Message = F.mongoose.model('Message', {
+  nickname: {
+      type: String,
+      default: 'Никнейм'
+   },
+msg: {
+type: String,
+default: 'message'
+},
+date: {
+type: String,
+default: '01:01 00:00'
+},
+client: {
+type: String,
+default: 'zero'
+}
+});
+}
+S.msgmodel(); 
+/return
+
+
+/return
+S.msgbroadcast = () => {
+F.wss.broadcast = function(m) {
+   F.wss.clients.forEach(function each(client) {
+       client.send(m);
+    });
+var obj = JSON.parse(m)
+F.bot.sendMessage(msg.chat.id, obj.nickname + '@🇷​🇴​🇺​🇳​🇩​🇷​🇦​🇼​: \n' + obj.msg);
+}
+}
+S.msgbroadcast(); 
+/return
+
+
+/return
+S.usermodel = () => {
+User = F.mongoose.model('User', {
+  nickname: {
+      type: String,
+      default: 'Никнейм'
+   },
+id: {
+type: String,
+default: '1234'
+}
+});
+}
+S.usermodel(); 
+/return
+
+
+/return
+S.initwbs = () => {
+setTimeout(() => {
+F.mongoose.connection.db.listCollections().toArray(function (err, names)  { 
+for (i = 0; i<names.length; i++) {
+if (names[i].name.substr(0,2) == 'wb') F.createwb(names[i].name)
+}
+}, 1000);
+});
+}
+S.initwbs(); 
+/return
+
