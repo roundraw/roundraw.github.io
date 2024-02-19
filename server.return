@@ -210,7 +210,7 @@ F.bot.onText(/\/keyboard/, (msg) => {
                 D.charsets.symEn : D.charsets.symRu
         })
     };
-    F.bot.sendMessage(msg.chat.id, "#ТегКлавиатуры", opts).then((msg) => {
+    F.bot.sendMessage(msg.chat.id, "#ТегКлавиатур��", opts).then((msg) => {
         D.tagMsg = msg;
         F.bot.sendMessage(msg.chat.id, "|", {
             reply_to_message_id: msg.message_id
@@ -241,21 +241,6 @@ const opts = msg.text.slice(1).split('@')[0].split('_');
 const lner = F.bot._textRegexpCallbacks[opts[1]];
 F.bot.sendMessage(msg.chat.id,"/del_" + (msg.message_id+1) + "\n/b" + "set_F_" + opts[1] + "_" + ((B.F[opts[1]]) ? "on" : "off") + "_" + (msg.message_id+1) + "\n/ret" + "urn\nF." + opts[1] + " = " + F[opts[1]].toString());
 F.bot.deleteMessage(msg.chat.id, msg.message_id)
-}); undefined 
-/return
-
-
-/return
-F.bot.onText(/\/broadcast/, (msg, match) => {
-var date = new Date;
-var message = JSON.stringify({
-msg: msg.text.split('/broadcast')[1],
-nickname: msg.from.first_name + ' ' + ((msg.from.last_name) ? msg.from.last_name : ''),
-client: 'zero',
-date: Date.parse(date)
-})
-F.wss.broadcast(message);
-       F.addToBase(message);
 }); undefined 
 /return
 
@@ -292,9 +277,83 @@ id: id
 
 
 /return
+F.bot.onText(/\/noretua{0}rn/, (msg, match) => {
+   if (msg.chat.id == D.mainChat) {
+
+    msg.text.split(match).forEach((item, i, arr) => {
+      i%2 && F.bot.sendMessage(msg.chat.id, 
+      JSON.stringify(eval('try {eval("function aa() {" + item + "}; aa()")} catch(e) {e.message}')), {
+        reply_to_message_id: msg.message_id
+      });
+    })
+    }
+  }); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/привет/, (msg) => {
+F.bot.sendMessage(msg.chat.id,
+'*Приветствую, ' + '[' + msg.from.first_name + '](' + 'tg://user?id=' + msg.from.id + ')*\nКак ваше настроение?'
+, {parse_mode:'MarkdownV2'})
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/ктоя/i, (msg) => { F.bot.sendMessage(msg.chat.id, "Пользователь найден!", {reply_markup: {inline_keyboard: [[{text: msg.from.first_name + ((!msg.from.last_name) ? '' : ' ' + msg.from.last_name) , url: "https://t.me/" + msg.from.username}]]}})
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/супер/i, (msg) => { F.bot.sendMessage(msg.chat.id, "Пользователь найден!", {reply_markup: {inline_keyboard: [
+[
+{text: "С", callback_data:"aa"},
+{text: "У", callback_data:"aa"},
+{text: "П", callback_data:"aa"},
+{text: "Е", callback_data:"aa"},
+{text: "Р", callback_data:"aa"}
+],
+[
+{text: "К", callback_data:"aa"},
+{text: "О", callback_data:"aa"},
+{text: "С", callback_data:"aa"},
+{text: "Т", callback_data:"aa"},
+{text: "Ы", callback_data:"aa"},
+{text: "Л", callback_data:"aa"},
+{text: "Ь", callback_data:"aa"}
+]
+]}})
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/broadcast/, (msg, match) => {
+var date = new Date;
+var message = JSON.stringify({
+msg: msg.text.split('/broadcast')[1],
+nickname: msg.from.first_name + ' ' + ((msg.from.last_name) ? msg.from.last_name : ''),
+client: 'zero',
+date: Date.parse(date)
+})
+F.wss.broadcast(message);
+       F.addToBase(message);
+}); undefined 
+/return
+
+
+/return
 F.figureProcess = function(message, wbid) {
+D.everyReq++;
 var attrs = message.toString().split('&');
 if (attrs[0] == 'new' && attrs[1] == 'Line') {
+attrs[3] = JSON.parse(attrs[3]);
+attrs[3].id = attrs[2];
+new F.wb[wbid](attrs[3]).save();
+}
+if (attrs[0] == 'new' && attrs[1] == 'msg') {
 attrs[3] = JSON.parse(attrs[3]);
 attrs[3].id = attrs[2];
 new F.wb[wbid](attrs[3]).save();
@@ -314,7 +373,8 @@ F.wb[wbid].updateOne({ id: attrs[1] }, attrs[2], function (err) { if (err) F.bot
 F.createwb = function(wbid) {
 F.ws = require("ws").Server;
 F.wbws[wbid] = new F.ws({noServer: true});
-F.wbws[wbid].on('connection', function connection(socket) {
+F.wbws[wbid].on('connection', function connection(socket, req) {
+socket.ip = req.socket.remoteAddress;
     socket.on('message', function(message) {
        F.wbws[wbid].broadcast(message);
        F.figureProcess(message, wbid);
@@ -335,6 +395,22 @@ F.wb[wbid] = F.mongoose.model(wbid, {
 id: {
 type: String,
 default: 'id'
+},
+msg: {
+type: String,
+default: ''
+},
+nickname: {
+type: String,
+default: ''
+},
+client: {
+type: String,
+default: 'zero'
+},
+date: {
+type: Number,
+default: 0
 },
 x: {
 type: Number,
@@ -410,9 +486,29 @@ F.host = function (req, res) {
     if (F.wb[wbid]) {
     F.wb[wbid].find({}, function(err, messages) {
 var arr = []; messages.forEach(function(record) {
-       arr.push(record)
+       if (!record.msg || record.msg == "") arr.push(record)
     });
 res.end(JSON.stringify(arr))
+  });
+  } else {
+res.statusCode = 404;
+res.end('Not found')
+}
+return
+}
+if (reqpath.includes('msg_')) {
+var page = req.url.toString().split('?')[1];
+    var wbid = "wb_" + reqpath.split('msg_')[1];
+    if (F.wb[wbid]) {
+    F.wb[wbid].find({}, function(err, messages) {
+var msgarr = [];
+var i = messages.length - 60 * page;
+for (i = (i < 0) ? 0 : i; i < messages.length - (-60 + page * 60); i++) {
+if (messages[i].msg) {
+  if (messages[i].msg.length > 0)  msgarr.push({nickname: messages[i].nickname, msg: messages[i].msg, date: messages[i].date, client: messages[i].client})
+}
+    }
+res.end(JSON.stringify(msgarr))
   });
   } else {
 res.statusCode = 404;
@@ -432,11 +528,11 @@ res.end(F.genBackup());
 return;
 }
 if (reqpath == '/chatclients') {
-var num = 0;
-F.wss.clients.forEach(function each(client) {
-       num++
+var ips = {};
+F.wbws['wb_messages'].clients.forEach(function each(client) {
+       ips[client.ip] = true;
     });
-res.end(num.toString());
+res.end(Object.keys(ips).length + "");
 return;
 }
 if (reqpath.includes('/users/')) {
@@ -766,12 +862,29 @@ return resp
 
 
 /return
+F.deleteScamByDate = function(date, date2) {
+date2 = date2 || Infinity;
+Message.find({}, function(err, messages) {
+for (var i = 0; i < messages.length; i++) {
+if (messages[i].date * 1 >= date * 1 && messages[i].date * 1 <= date2 ) messages[i].remove(() => {});
+}
+  });
+}
+/return
+
+
+/return
 D.port = 80; undefined
 /return
 
 
 /return
 D.chatPort = 2000; undefined
+/return
+
+
+/return
+D.mainChat = "-1001609661635"; undefined
 /return
 
 
@@ -786,7 +899,7 @@ D.charsets = {"numNum":[[{"text":"+"},{"text":"1"},{"text":"2"},{"text":"3"},{"t
 
 
 /return
-D.charset = "en"; undefined
+D.charset = "ru"; undefined
 /return
 
 
@@ -811,12 +924,17 @@ D.listFOMsg = {"message_id":487884,"from":{"id":2132778052,"is_bot":true,"first_
 
 
 /return
-D.listSMsg = {"message_id":490043,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1001609661635,"title":"Fri 10:40 roundraw-crutch","username":"roundrawcrutch","type":"supergroup"},"date":1689374847,"text":"_"}; undefined
+D.listSMsg = {"message_id":492389,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1001609661635,"title":"Fri 10:40 roundraw-crutch","username":"roundrawcrutch","type":"supergroup"},"date":1708346936,"text":"_"}; undefined
 /return
 
 
 /return
-B = {"D":{"i":true,"listDMsg":true,"dashSpell":true,"toDelete":true,"replyListenerId":true,"botMsg":true,"tagMsg":true,"listFMsg":true,"toF":true,"toInstall":true,"text":true,"listMsg":true,"mainChat":true},"F":{"imgy":true,"img":true,"fs":true,"wordgen":true,"execa":true,"rwg":true,"wss":true,"ws":true,"mongoose":true,"bot":true,"server":true,"imge":true,"imga":true,"tInt":true,"what":true,"sp":true,"wb":true,"wbws":true,"random-id":true},"S":{},"C":{"0":true,"40":true,"54":true}}; undefined
+D.everyReq = 492; undefined
+/return
+
+
+/return
+B = {"D":{"i":true,"listDMsg":true,"dashSpell":true,"toDelete":true,"replyListenerId":true,"botMsg":true,"tagMsg":true,"listFMsg":true,"toF":true,"toInstall":true,"text":true,"listMsg":true},"F":{"imgy":true,"img":true,"fs":true,"wordgen":true,"execa":true,"rwg":true,"wss":true,"ws":true,"mongoose":true,"bot":true,"server":true,"imge":true,"imga":true,"tInt":true,"what":true,"sp":true,"wb":true,"wbws":true,"random-id":true},"S":{},"C":{"0":true,"40":true,"54":true}}; undefined
 /return
 
 
