@@ -332,14 +332,14 @@ F.bot.onText(/супер/i, (msg) => { F.bot.sendMessage(msg.chat.id, "Поль�
 /return
 F.bot.onText(/\/broadcast/, (msg, match) => {
 var date = new Date;
-var message = JSON.stringify({
+var message = 'new&msg&' + Date.parse(date) + '&' + JSON.stringify({
 msg: msg.text.split('/broadcast')[1],
 nickname: msg.from.first_name + ' ' + ((msg.from.last_name) ? msg.from.last_name : ''),
 client: 'zero',
 date: Date.parse(date)
 })
-F.wss.broadcast(message);
-       F.addToBase(message);
+F.wbws['wb_messages'].broadcast(message);
+       F.figureProcess(message, 'wb_messages');
 }); undefined 
 /return
 
@@ -929,7 +929,7 @@ D.listSMsg = {"message_id":492389,"from":{"id":2132778052,"is_bot":true,"first_n
 
 
 /return
-D.everyReq = 492; undefined
+D.everyReq = 496; undefined
 /return
 
 
@@ -1047,11 +1047,11 @@ S.msgmodel();
 
 /return
 S.msgbroadcast = () => {
-F.wss.broadcast = function(m) {
-   F.wss.clients.forEach(function each(client) {
-       client.send(m);
-    });
-var obj = JSON.parse(m)
+F.wbws['wb_messages'].broadcast = function(m) {
+F.wbws['wb_messages'].clients.forEach(function each(client) {
+client.send(m);
+});
+var obj = JSON.parse((m + '').split('&')[3]);
 F.bot.sendMessage(msg.chat.id, obj.nickname + '@🇷​🇴​🇺​🇳​🇩​🇷​🇦​🇼​: \n' + obj.msg);
 }
 }
