@@ -210,7 +210,7 @@ F.bot.onText(/\/keyboard/, (msg) => {
                 D.charsets.symEn : D.charsets.symRu
         })
     };
-    F.bot.sendMessage(msg.chat.id, "#ТегКлавиатур��", opts).then((msg) => {
+    F.bot.sendMessage(msg.chat.id, "#ТегКлавиатур����", opts).then((msg) => {
         D.tagMsg = msg;
         F.bot.sendMessage(msg.chat.id, "|", {
             reply_to_message_id: msg.message_id
@@ -954,7 +954,7 @@ D.listFOMsg = {"message_id":487884,"from":{"id":2132778052,"is_bot":true,"first_
 
 
 /return
-D.listSMsg = {"message_id":492389,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1001609661635,"title":"Fri 10:40 roundraw-crutch","username":"roundrawcrutch","type":"supergroup"},"date":1708346936,"text":"_"}; undefined
+D.listSMsg = {"message_id":493379,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1001609661635,"title":"Fri 10:40 roundraw-crutch","username":"roundrawcrutch","type":"supergroup"},"date":1708534045,"text":"_"}; undefined
 /return
 
 
@@ -964,7 +964,7 @@ D.everyReq = 2489; undefined
 
 
 /return
-B = {"D":{"i":true,"listDMsg":true,"dashSpell":true,"toDelete":true,"replyListenerId":true,"botMsg":true,"tagMsg":true,"listFMsg":true,"toF":true,"toInstall":true,"text":true,"listMsg":true},"F":{"imgy":true,"img":true,"fs":true,"wordgen":true,"execa":true,"rwg":true,"wss":true,"ws":true,"mongoose":true,"bot":true,"server":true,"imge":true,"imga":true,"tInt":true,"what":true,"sp":true,"wb":true,"wbws":true,"random-id":true},"S":{},"C":{"0":true,"40":true,"54":true}}; undefined
+B = {"D":{"i":true,"listDMsg":true,"dashSpell":true,"toDelete":true,"replyListenerId":true,"botMsg":true,"tagMsg":true,"listFMsg":true,"toF":true,"toInstall":true,"text":true,"listMsg":true},"F":{"imgy":true,"img":true,"fs":true,"wordgen":true,"execa":true,"rwg":true,"wss":true,"ws":true,"mongoose":true,"bot":true,"server":true,"imge":true,"imga":true,"tInt":true,"what":true,"sp":true,"wb":true,"wbws":true,"random-id":true},"S":{"initwbs":true},"C":{"0":true,"40":true,"54":true}}; undefined
 /return
 
 
@@ -1082,7 +1082,7 @@ F.wbws['wb_messages'].clients.forEach(function each(client) {
 client.send(m);
 });
 var obj = JSON.parse((m + '').split('&')[3]);
-F.bot.sendMessage(msg.chat.id, obj.nickname + '@🇷​🇴​🇺​🇳​🇩​🇷​🇦​🇼​: \n' + obj.msg);
+F.bot.sendMessage("-1001609661635",obj.date + ' ' + obj.nickname + '@🇷​🇴​🇺​🇳​🇩​🇷​🇦​🇼​: \n' + obj.msg);
 }
 }
 S.msgbroadcast(); 
@@ -1103,19 +1103,5 @@ default: '1234'
 });
 }
 S.usermodel(); 
-/return
-
-
-/return
-S.initwbs = () => {
-setTimeout(() => {
-F.mongoose.connection.db.listCollections().toArray(function (err, names)  { 
-for (i = 0; i<names.length; i++) {
-if (names[i].name.substr(0,2) == 'wb') F.createwb(names[i].name)
-}
-}, 1000);
-});
-}
-S.initwbs(); 
 /return
 
