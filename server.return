@@ -483,6 +483,10 @@ default: 0
 font: {
 type: String,
 default: 'serif'
+},
+reply: {
+type: Number,
+default: 0
 }
 })
 }
