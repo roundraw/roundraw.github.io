@@ -210,7 +210,7 @@ F.bot.onText(/\/keyboard/, (msg) => {
                 D.charsets.symEn : D.charsets.symRu
         })
     };
-    F.bot.sendMessage(msg.chat.id, "#ТегКлавиатур����", opts).then((msg) => {
+    F.bot.sendMessage(msg.chat.id, "#ТегКлавиатур������", opts).then((msg) => {
         D.tagMsg = msg;
         F.bot.sendMessage(msg.chat.id, "|", {
             reply_to_message_id: msg.message_id
@@ -958,7 +958,7 @@ D.listFOMsg = {"message_id":487884,"from":{"id":2132778052,"is_bot":true,"first_
 
 
 /return
-D.listSMsg = {"message_id":493379,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1001609661635,"title":"Fri 10:40 roundraw-crutch","username":"roundrawcrutch","type":"supergroup"},"date":1708534045,"text":"_"}; undefined
+D.listSMsg = {"message_id":493433,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1001609661635,"title":"Fri 10:40 roundraw-crutch","username":"roundrawcrutch","type":"supergroup"},"date":1708535012,"text":"_"}; undefined
 /return
 
 
@@ -968,7 +968,7 @@ D.everyReq = 2489; undefined
 
 
 /return
-B = {"D":{"i":true,"listDMsg":true,"dashSpell":true,"toDelete":true,"replyListenerId":true,"botMsg":true,"tagMsg":true,"listFMsg":true,"toF":true,"toInstall":true,"text":true,"listMsg":true},"F":{"imgy":true,"img":true,"fs":true,"wordgen":true,"execa":true,"rwg":true,"wss":true,"ws":true,"mongoose":true,"bot":true,"server":true,"imge":true,"imga":true,"tInt":true,"what":true,"sp":true,"wb":true,"wbws":true,"random-id":true},"S":{"initwbs":true},"C":{"0":true,"40":true,"54":true}}; undefined
+B = {"D":{"i":true,"listDMsg":true,"dashSpell":true,"toDelete":true,"replyListenerId":true,"botMsg":true,"tagMsg":true,"listFMsg":true,"toF":true,"toInstall":true,"text":true,"listMsg":true},"F":{"imgy":true,"img":true,"fs":true,"wordgen":true,"execa":true,"rwg":true,"wss":true,"ws":true,"mongoose":true,"bot":true,"server":true,"imge":true,"imga":true,"tInt":true,"what":true,"sp":true,"wb":true,"wbws":true,"random-id":true},"S":{"initwbs":true,"msgbroadcast":true},"C":{"0":true,"40":true,"54":true}}; undefined
 /return
 
 
@@ -1021,9 +1021,11 @@ F.server.on('upgrade', function upgrade(request, socket, head) {
 var reqpath = request.url.toString().split('?')[0];
 var wbid = reqpath.split('/')[1];
     if (reqpath.includes('wb_')) {
+    if (F.wbws[wbid]) {
     F.wbws[wbid].handleUpgrade(request, socket, head, function done(ws) {
       F.wbws[wbid].emit('connection', ws, request);
     });
+    } else F.bot.sendMessage("-1001609661635", "why do you need " + wbid)
   } else {
     socket.destroy();
   }
@@ -1076,20 +1078,6 @@ default: 'zero'
 });
 }
 S.msgmodel(); 
-/return
-
-
-/return
-S.msgbroadcast = () => {
-F.wbws['wb_messages'].broadcast = function(m) {
-F.wbws['wb_messages'].clients.forEach(function each(client) {
-client.send(m);
-});
-var obj = JSON.parse((m + '').split('&')[3]);
-F.bot.sendMessage("-1001609661635",obj.date + ' ' + obj.nickname + '@🇷​🇴​🇺​🇳​🇩​🇷​🇦​🇼​: \n' + obj.msg);
-}
-}
-S.msgbroadcast(); 
 /return
 
 
