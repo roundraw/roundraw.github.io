@@ -379,13 +379,25 @@ socket.ip = req.socket.remoteAddress;
        F.wbws[wbid].broadcast(message);
        F.figureProcess(message, wbid);
     });
-
+socket.on('pong', F.heartbeat);
 });
 F.wbws[wbid].broadcast = function broadcast(msg) {
    F.wbws[wbid].clients.forEach(function each(client) {
        client.send(msg);
     });
 };
+F.wbws[wbid].interval = setInterval(function ping() {
+  F.wbws[wbid].clients.forEach(function each(ws) {
+    if (ws.isAlive === false) return ws.terminate();
+
+    ws.isAlive = false;
+    ws.ping();
+  });
+}, 30000);
+
+F.wbws[wbid].on('close', function close() {
+  clearInterval(F.wbws[wbid].interval);
+});
 var absent = !0;
 for (var key in F.mongoose.connection.models) {
 if (key == wbid) absent = !1;
@@ -529,10 +541,15 @@ return;
 }
 if (reqpath == '/chatclients') {
 var ips = {};
-F.wbws['wb_messages'].clients.forEach(function each(client) {
+if (F.wbws[(req.url.toString().split('?')[1]) ? 'wb_' + req.url.toString().split('?')[1] : 'wb_messages']) {
+F.wbws[(req.url.toString().split('?')[1]) ? 'wb_' + req.url.toString().split('?')[1] : 'wb_messages'].clients.forEach(function each(client) {
        ips[client.ip] = true;
     });
 res.end(Object.keys(ips).length + "");
+} else {
+res.statusCode = 404;
+res.end('Users cannot exist here');
+}
 return;
 }
 if (reqpath.includes('/users/')) {
@@ -874,6 +891,19 @@ if (messages[i].date * 1 >= date * 1 && messages[i].date * 1 <= date2 ) messages
 
 
 /return
+F.heartbeat = () => { this.isAlive = true;
+}
+/return
+
+
+/return
+F.genID = function() {
+return Math.random().toString(16).slice(2)
+}
+/return
+
+
+/return
 D.port = 80; undefined
 /return
 
@@ -929,7 +959,7 @@ D.listSMsg = {"message_id":492389,"from":{"id":2132778052,"is_bot":true,"first_n
 
 
 /return
-D.everyReq = 496; undefined
+D.everyReq = 2489; undefined
 /return
 
 
