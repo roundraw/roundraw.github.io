@@ -1,4 +1,3 @@
-
 /return
 F.bot.onText(/костыль/i, (msg) => {
 F.bot.sendMessage(msg.chat.id, "👆", {reply_to_message_id: msg.message_id})
@@ -131,7 +130,7 @@ const bmsg = F.bot.sendMessage(msg.chat.id, err.message).then(F.delLogs)
 
 
 /return
-F.bot.onText(/\/key_del/, (msg) => { F.bot.sendMessage(msg.chat.id, "Клавиатура убрана", {reply_markup: {remove_keyboard: true}})
+F.bot.onText(/\/key_del/, (msg) => { F.bot.sendMessage(msg.chat.id, "Клавиатур�� убрана", {reply_markup: {remove_keyboard: true}})
 }); undefined 
 /return
 
@@ -211,7 +210,7 @@ F.bot.onText(/\/keyboard/, (msg) => {
                 D.charsets.symEn : D.charsets.symRu
         })
     };
-    F.bot.sendMessage(msg.chat.id, "#ТегКлавиатур������", opts).then((msg) => {
+    F.bot.sendMessage(msg.chat.id, "#ТегКлавиату��������", opts).then((msg) => {
         D.tagMsg = msg;
         F.bot.sendMessage(msg.chat.id, "|", {
             reply_to_message_id: msg.message_id
@@ -909,6 +908,11 @@ return Math.random().toString(16).slice(2)
 
 
 /return
+F.noWB = (reqpath, wbid) => { }
+/return
+
+
+/return
 D.port = 80; undefined
 /return
 
@@ -959,7 +963,7 @@ D.listFOMsg = {"message_id":487884,"from":{"id":2132778052,"is_bot":true,"first_
 
 
 /return
-D.listSMsg = {"message_id":493433,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1001609661635,"title":"Fri 10:40 roundraw-crutch","username":"roundrawcrutch","type":"supergroup"},"date":1708535012,"text":"_"}; undefined
+D.listSMsg = {"message_id":493505,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1001609661635,"title":"Fri 10:40 roundraw-crutch","username":"roundrawcrutch","type":"supergroup"},"date":1708536636,"text":"_"}; undefined
 /return
 
 
@@ -1026,7 +1030,7 @@ var wbid = reqpath.split('/')[1];
     F.wbws[wbid].handleUpgrade(request, socket, head, function done(ws) {
       F.wbws[wbid].emit('connection', ws, request);
     });
-    } else F.bot.sendMessage("-1001609661635", "why do you need " + wbid)
+    } else F.noWB(request.url, wbid)
   } else {
     socket.destroy();
   }
