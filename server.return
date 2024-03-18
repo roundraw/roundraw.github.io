@@ -1004,7 +1004,7 @@ S.mongodb();
 /return
 S.server = () => {
 path = require('path');
-http = require('https');
+https = require('https');
 fs = require('fs');
 dir = path.join('files');
 
