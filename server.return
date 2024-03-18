@@ -1,4 +1,3 @@
-
 /return
 F.bot.onText(/костыль/i, (msg) => {
 F.bot.sendMessage(msg.chat.id, "👆", {reply_to_message_id: msg.message_id})
@@ -131,7 +130,7 @@ const bmsg = F.bot.sendMessage(msg.chat.id, err.message).then(F.delLogs)
 
 
 /return
-F.bot.onText(/\/key_del/, (msg) => { F.bot.sendMessage(msg.chat.id, "Клавиатур�� убрана", {reply_markup: {remove_keyboard: true}})
+F.bot.onText(/\/key_del/, (msg) => { F.bot.sendMessage(msg.chat.id, "Клавиатур���� убрана", {reply_markup: {remove_keyboard: true}})
 }); undefined 
 /return
 
@@ -211,7 +210,7 @@ F.bot.onText(/\/keyboard/, (msg) => {
                 D.charsets.symEn : D.charsets.symRu
         })
     };
-    F.bot.sendMessage(msg.chat.id, "#ТегКлавиату��������", opts).then((msg) => {
+    F.bot.sendMessage(msg.chat.id, "#ТегКлавиа��у��������", opts).then((msg) => {
         D.tagMsg = msg;
         F.bot.sendMessage(msg.chat.id, "|", {
             reply_to_message_id: msg.message_id
@@ -964,12 +963,12 @@ D.listFOMsg = {"message_id":487884,"from":{"id":2132778052,"is_bot":true,"first_
 
 
 /return
-D.listSMsg = {"message_id":493505,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1001609661635,"title":"Fri 10:40 roundraw-crutch","username":"roundrawcrutch","type":"supergroup"},"date":1708536636,"text":"_"}; undefined
+D.listSMsg = {"message_id":493761,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1001609661635,"title":"Fri 10:40 roundraw-crutch","username":"roundrawcrutch","type":"supergroup"},"date":1710730405,"text":"_"}; undefined
 /return
 
 
 /return
-D.everyReq = 2489; undefined
+D.everyReq = 51105; undefined
 /return
 
 
@@ -1004,11 +1003,15 @@ S.mongodb();
 /return
 S.server = () => {
 path = require('path');
-http = require('http');
+http = require('https');
 fs = require('fs');
 dir = path.join('files');
 
-F.server = http.createServer(function(req, res) {
+
+F.server = https.createServer({
+  key: fs.readFileSync('/etc/letsencrypt/live/noopdie.com/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/noopdie.com/fullchain.pem')
+}, function(req, res) {
 F.host(req,res)
 });
 F.server.listen(D.port, function () {
