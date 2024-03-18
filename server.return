@@ -1,3 +1,4 @@
+
 /return
 F.bot.onText(/костыль/i, (msg) => {
 F.bot.sendMessage(msg.chat.id, "👆", {reply_to_message_id: msg.message_id})
