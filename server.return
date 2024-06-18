@@ -1,4 +1,3 @@
-
 /return
 F.bot.onText(/костыль/i, (msg) => {
 F.bot.sendMessage(msg.chat.id, "👆", {reply_to_message_id: msg.message_id})
@@ -131,7 +130,7 @@ const bmsg = F.bot.sendMessage(msg.chat.id, err.message).then(F.delLogs)
 
 
 /return
-F.bot.onText(/\/key_del/, (msg) => { F.bot.sendMessage(msg.chat.id, "Клавиатур���� убрана", {reply_markup: {remove_keyboard: true}})
+F.bot.onText(/\/key_del/, (msg) => { F.bot.sendMessage(msg.chat.id, "Клавиатур������ убрана", {reply_markup: {remove_keyboard: true}})
 }); undefined 
 /return
 
@@ -192,15 +191,6 @@ msg.text = msg.text.replaceAll('”', '"');
 
 
 /return
-F.bot.onText(/\/del/, (msg) => {
-const opts = msg.text.slice(1).split('@')[0].split('_');
-F.bot.deleteMessage(msg.chat.id, opts[1])
-F.bot.deleteMessage(msg.chat.id, msg.message_id)
-}); undefined 
-/return
-
-
-/return
 F.bot.onText(/\/keyboard/, (msg) => {
     if (typeof D.text != "string") D.text = "";
     const opts = {
@@ -211,7 +201,7 @@ F.bot.onText(/\/keyboard/, (msg) => {
                 D.charsets.symEn : D.charsets.symRu
         })
     };
-    F.bot.sendMessage(msg.chat.id, "#ТегКлавиа��у��������", opts).then((msg) => {
+    F.bot.sendMessage(msg.chat.id, "#ТегКла��иа��у��������", opts).then((msg) => {
         D.tagMsg = msg;
         F.bot.sendMessage(msg.chat.id, "|", {
             reply_to_message_id: msg.message_id
@@ -231,16 +221,6 @@ F.bot.editMessageText(F.genDList(msg), {chat_id: msg.chat.id, message_id: msg.me
 if (D.listDMsg) F.bot.deleteMessage(msg.chat.id, D.listDMsg.message_id);
 D.listDMsg = msg
 })
-F.bot.deleteMessage(msg.chat.id, msg.message_id)
-}); undefined 
-/return
-
-
-/return
-F.bot.onText(/\/vf/, (msg) => {
-const opts = msg.text.slice(1).split('@')[0].split('_');
-const lner = F.bot._textRegexpCallbacks[opts[1]];
-F.bot.sendMessage(msg.chat.id,"/del_" + (msg.message_id+1) + "\n/b" + "set_F_" + opts[1] + "_" + ((B.F[opts[1]]) ? "on" : "off") + "_" + (msg.message_id+1) + "\n/ret" + "urn\nF." + opts[1] + " = " + F[opts[1]].toString());
 F.bot.deleteMessage(msg.chat.id, msg.message_id)
 }); undefined 
 /return
@@ -346,27 +326,40 @@ F.wbws['wb_messages'].broadcast(message);
 
 
 /return
-F.figureProcess = function(message, wbid) {
-D.everyReq++;
-var attrs = message.toString().split('&');
-if (attrs[0] == 'new' && attrs[1] == 'Line') {
-attrs[3] = JSON.parse(attrs[3]);
-attrs[3].id = attrs[2];
-new F.wb[wbid](attrs[3]).save();
+F.bot.onText(/\/vf/, (msg) => {
+const opts = msg.text.slice(1).split('@')[0].split('_');
+const lner = F.bot._textRegexpCallbacks[opts[1]];
+F.bot.sendMessage(msg.chat.id,"/del_" + (msg.message_id+1) + "\nb" + "set_F_" + opts[1] + "_" + ((B.F[opts[1]]) ? "on" : "off") + "_" + (msg.message_id+1) + "\n/ret" + "urn\nF." + opts[1] + " = " + F[opts[1]].toString());
+F.bot.deleteMessage(msg.chat.id, msg.message_id)
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/google (.+)/, (msg, match) => {
+F.bot.sendMessage(msg.chat.id, 'https://www.google.com/search?q=' + encodeURI(match[1]), {reply_to_message_id: msg.message_id});
+}); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/say/, (msg, match) => {
+    msg.text.split("/say").forEach((item, i, arr) => {
+      F.textPhoto(item, msg);
+    });
+  }); undefined 
+/return
+
+
+/return
+F.bot.onText(/\/del/, (msg) => {
+const opts = msg.text.slice(1).split('@')[0].split('_');
+F.bot.deleteMessage(msg.chat.id, opts[1])
+F.bot.deleteMessage(msg.chat.id, msg.message_id)
+if (msg.reply_to_message) {
+F.bot.deleteMessage(msg.chat.id, msg.reply_to_message.message_id)
 }
-if (attrs[0] == 'new' && attrs[1] == 'msg') {
-attrs[3] = JSON.parse(attrs[3]);
-attrs[3].id = attrs[2];
-new F.wb[wbid](attrs[3]).save();
-}
-if (attrs[0] == 'del') {
-F.wb[wbid].deleteOne({ id: attrs[1] }, function (err) { if (err) F.bot.sendMessage(-1001609661635, err) });
-}
-if (attrs[0] == 'change') {
-attrs[2] = JSON.parse(attrs[2]);
-F.wb[wbid].updateOne({ id: attrs[1] }, attrs[2], function (err) { if (err) F.bot.sendMessage(-1001609661635, err) });
-}
-}
+}); undefined 
 /return
 
 
@@ -399,6 +392,8 @@ F.wbws[wbid].interval = setInterval(function ping() {
 F.wbws[wbid].on('close', function close() {
   clearInterval(F.wbws[wbid].interval);
 });
+D.subs[wbid] = [];
+D.reSubs[wbid] = [];
 var absent = !0;
 for (var key in F.mongoose.connection.models) {
 if (key == wbid) absent = !1;
@@ -410,84 +405,91 @@ type: String,
 default: 'id'
 },
 msg: {
-type: String,
-default: ''
+type: String
 },
 nickname: {
-type: String,
-default: ''
+type: String
 },
 client: {
-type: String,
-default: 'zero'
+type: String
 },
 date: {
-type: Number,
-default: 0
+type: Number
 },
 x: {
-type: Number,
-default: 0
+type: Number
 },
 y: {
-type: Number,
-default: 0
+type: Number
 },
 strokeWidth: {
-type: Number,
-default: 5
+type: Number
 },
 segments: {
-type: Array,
-default: []
+type: Array
 },
 shadowColor: {
-type: String,
-default: 'black'
+type: String
 },
 shadowWidth: {
-type: Number,
-default: 0
+type: Number
 },
 shadowX: {
-type: Number,
-default: 0
+type: Number
 },
 shadowY: {
-type: Number,
-default: 0
+type: Number
 },
 strokeColor: {
-type: String,
-default: 'black'
+type: String
 },
 opacity: {
-type: Number,
-default: 1
+type: Number
 },
 color: {
-type: String,
-default: 'rgba(0,0,0,0)'
+type: String
 },
 lineCap: {
-type: String,
-default: 'round'
+type: String
 },
 lineJoin: {
-type: String,
-default: 'round'
+type: String
 },
 fontWidth: {
-type: Number,
-default: 0
+type: Number
 },
 font: {
-type: String,
-default: 'serif'
+type: String
 },
 reply: {
-type: Number,
-default: 0
+type: Number
+},
+width: {
+type: Number
+},
+height: {
+type: Number
+},
+deg: {
+type: Number
+},
+imageWidth: {
+type: Number
+},
+imageHeight: {
+type: Number
+},
+image: {
+type: String
+},
+closed: {
+type: Boolean
+},
+gradient: {
+type: Object
+},
+strokeGradient: {
+type: Object
 }
 })
 }
@@ -499,95 +501,41 @@ default: 0
 F.host = function (req, res) {
     var reqpath = req.url.toString().split('?')[0];
     if (reqpath.includes('wb_')) {
-    var wbid = reqpath.split('/')[1];
-    if (F.wb[wbid]) {
-    F.wb[wbid].find({}, function(err, messages) {
-var arr = []; messages.forEach(function(record) {
-       if (!record.msg || record.msg == "") arr.push(record)
-    });
-res.end(JSON.stringify(arr))
-  });
-  } else {
-res.statusCode = 404;
-res.end('Not found')
-}
+    F.host$wb(req, res, reqpath);
 return
 }
 if (reqpath.includes('msg_')) {
-var page = req.url.toString().split('?')[1];
-    var wbid = "wb_" + reqpath.split('msg_')[1];
-    if (F.wb[wbid]) {
-    F.wb[wbid].find({}, function(err, messages) {
-var msgarr = [];
-var i = messages.length - 60 * page;
-for (i = (i < 0) ? 0 : i; i < messages.length - (-60 + page * 60); i++) {
-if (messages[i].msg) {
-  if (messages[i].msg.length > 0)  msgarr.push({nickname: messages[i].nickname, msg: messages[i].msg, date: messages[i].date, client: messages[i].client})
-}
-    }
-res.end(JSON.stringify(msgarr))
-  });
-  } else {
-res.statusCode = 404;
-res.end('Not found')
-}
+F.host$msg(req, res, reqpath);
 return
 }
 if (reqpath == '/newWhiteboard') {
-var id = 'wb_' + Math.random().toString().slice(2);
-F.createwb(id);
-res.end(id);
+F.host$newWhiteboard(req, res, reqpath);
+return;
+}
+if (reqpath == '/register') {
+F.host$register(req, res, reqpath);
+return;
+}
+if (reqpath == '/repell') {
+F.host$repell(req, res, reqpath);
+return;
+}
+if (reqpath == '/resub') {
+F.host$resub(req, res, reqpath);
 return;
 }
 if (reqpath == '/server') {
-res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-res.end(F.genBackup());
+F.host$server(req, res, reqpath);
 return;
 }
 if (reqpath == '/chatclients') {
-var ips = {};
-if (F.wbws[(req.url.toString().split('?')[1]) ? 'wb_' + req.url.toString().split('?')[1] : 'wb_messages']) {
-F.wbws[(req.url.toString().split('?')[1]) ? 'wb_' + req.url.toString().split('?')[1] : 'wb_messages'].clients.forEach(function each(client) {
-       ips[client.ip] = true;
-    });
-res.end(Object.keys(ips).length + "");
-} else {
-res.statusCode = 404;
-res.end('Users cannot exist here');
-}
+F.host$chatclients(req, res, reqpath);
 return;
 }
 if (reqpath.includes('/users/')) {
-var id = reqpath.split('/').reverse()[0];
-User.findOne({id: id}, (err, user) => {
-if (user && user.nickname) res.end(user.nickname);
-else {
-res.statusCode = 404;
-res.end('User not found');
-}
-});
+F.host$users(req, res, reqpath);
 return;
 }
-if (reqpath.includes('/messages')) {
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    var page = (reqpath.includes('&')) ? reqpath.split('&')[1] : 1;
-Message.find({}, function(err, messages) {
-c = err;
-var msgarr = [];
-var i = messages.length - 60 * page;
-for (i = (i < 0) ? 0 : i; i < messages.length - (-60 + page * 60); i++) {
-       msgarr.push({nickname: messages[i].nickname, msg: messages[i].msg, date: messages[i].date, client: messages[i].client})
-    }
-res.end(JSON.stringify(msgarr))
-  });
-    return
-    }
-
-    if (req.method !== 'GET') {
-        res.statusCode = 501;
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-        return res.end('Method not implemented');
-    }
     var file = path.join(dir, reqpath.replace(/\/$/, '/index.html'));
     if (file.indexOf(dir + path.sep) !== 0) {
         res.statusCode = 403;
@@ -913,15 +861,301 @@ F.noWB = (reqpath, wbid) => { }
 /return
 
 
+/return
+F.host$resub = function(req, res, reqpath, wbid) {
+res.statusCode = 201;
+res.end("OMG");
+
+var body = "";
+req.on('data', (data) => {
+body += data;
+});
+req.on('end', () => {
+
+var obj = JSON.parse(body);
+if (obj.subscription) {
+for (var i = 0; i < D.reSubs[obj.wbid].length; i++) {
+if (JSON.parse(obj.subscription).keys.auth == D.reSubs[obj.wbid][i].keys.auth) {
+D.subs[obj.wbid].push(D.reSubs[obj.wbid][i]);
+D.reSubs[obj.wbid].splice(i, 1);
+}
+}
+
+}
+});
+}
+/return
+
+
+/return
+F.host$register = function(req, res, reqpath, wbid) {
+var body = "";
+req.on('data', (data) => {
+body += data;
+});
+req.on('end', () => {
+var obj = JSON.parse(body);
+if (obj.subscription) {
+for (var i = 0; i < D.subs[obj.wbid].length; i++) {
+if (obj.subscription.keys.auth == D.reSubs[obj.wbid][i].keys.auth) D.reSubs[obj.wbid].splice(i, 1);
+}
+for (var i = 0; i < D.subs[obj.wbid].length; i++) {
+if (obj.subscription.keys.auth == D.subs[obj.wbid][i].keys.auth) D.subs[obj.wbid].splice(i, 1);
+}
+if (!obj.remove) D.reSubs[obj.wbid].push(obj.subscription)
+res.statusCode = 201;
+res.end();
+}
+});
+}
+/return
+
+
+/return
+F.host$repell = function(req, res, reqpath, wbid) {
+var body = "";
+req.on('data', (data) => {
+body += data;
+});
+req.on('end', () => {
+var obj = JSON.parse(body);
+if (obj.subscription) {
+for (var i = 0; i < D.subs[obj.wbid].length; i++) {
+if (JSON.parse(obj.subscription).keys.auth == D.subs[obj.wbid][i].keys.auth) {
+D.reSubs[obj.wbid].push(D.subs[obj.wbid][i]);
+D.subs[obj.wbid].splice(i, 1);
+}
+}
+res.statusCode = 201;
+res.end();
+}
+});
+}
+/return
+
+
+/return
+F.host$wb = function(req, res, reqpath) {
+    var wbid = reqpath.split('/')[1];
+    if (F.wb[wbid]) {
+    F.wb[wbid].find({}, function(err, messages) {
+var arr = []; messages.forEach(function(record) {
+       if (!record.msg || record.msg == "") arr.push(record)
+    });
+res.end(JSON.stringify(arr))
+  });
+  } else {
+res.statusCode = 404;
+res.end('Not found')
+}
+}
+/return
+
+
+/return
+F.host$msg = function(req, res, reqpath, wbid) {
+var page = req.url.toString().split('?')[1];
+    var wbid = "wb_" + reqpath.split('msg_')[1];
+    if (F.wb[wbid]) {
+    F.wb[wbid].find({}, function(err, el) {
+var msgarr = [];
+var messages = [];
+for (var i = 0; i < el.length; i++) {
+if (el[i].msg) {
+  if (el[i].msg.length > 0) {
+messages.push(el[i])
+}
+}
+}
+var i = messages.length - 60 * page;
+for (i = (i < 0) ? 0 : i; i < messages.length - (-60 + page * 60); i++) {
+if (messages[i].msg) {
+  if (messages[i].msg.length > 0) {
+  var obj = {nickname: messages[i].nickname, msg: messages[i].msg, date: messages[i].date, client: messages[i].client}
+  if (messages[i].reply) {
+  obj.reply = messages[i].reply;
+messages.forEach((msg2) => {
+if (obj.reply == msg2.date) obj.replyMsg = msg2.nickname.substring(0, 16) + ':  ' + msg2.msg.substring(0, 600);
+});
+  }
+  msgarr.push(obj)
+  }
+}
+    }
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+res.end(JSON.stringify(msgarr))
+  });
+  } else {
+res.statusCode = 404;
+res.end('Not found')
+}
+}
+/return
+
+
+/return
+F.host$chatclients = function(req, res, reqpath) {
+var ips = {};
+if (F.wbws[(req.url.toString().split('?')[1]) ? 'wb_' + req.url.toString().split('?')[1] : 'wb_messages']) {
+F.wbws[(req.url.toString().split('?')[1]) ? 'wb_' + req.url.toString().split('?')[1] : 'wb_messages'].clients.forEach(function each(client) {
+       ips[client.ip] = true;
+    });
+res.end(Object.keys(ips).length + "");
+} else {
+res.statusCode = 404;
+res.end('Users cannot exist here');
+}
+}
+/return
+
+
+/return
+F.host$users = function(req, res, reqpath) {
+var id = reqpath.split('/').reverse()[0];
+User.findOne({id: id}, (err, user) => {
+if (user && user.nickname) res.end(user.nickname);
+else {
+res.statusCode = 404;
+res.end('User not found');
+}
+});
+}
+/return
+
+
+/return
+F.host$server = function(req, res, reqpath) {
+res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+res.end(F.genBackup());
+}
+/return
+
+
+/return
+F.host$newWhiteboard = function(req, res, reqpath) {
+var id = 'wb_' + Math.random().toString().slice(2);
+F.createwb(id);
+res.end(id);
+}
+/return
+
+
+/return
+F.httphost = function(req, res) {
+res.writeHead(301, { Location: 'https://' + req.headers.host});
+res.end('aaa');
+}
+/return
+
+
+/return
+F.httpserver = [object Object]
+/return
+
+
+/return
+F.undefined = [object Object]
+/return
+
+
+/return
+F.webPush = [object Object]
+/return
+
+
+/return
+F.TTI = [object Object]
+/return
+
+
+/return
+F.textPhoto = (text, msg) => {
+if (typeof text == "object") text = F.JSONBeautify(text, null, 2, 100);
+var string = F.TTI.generateSync(text);
+var regex = /^data:.+\/(.+);base64,(.*)$/;
+
+var matches = string.match(regex);
+var ext = matches[1];
+var data = matches[2];
+var buffer = Buffer.from(data, 'base64');
+fs.writeFileSync('data.' + ext, buffer);
+F.bot.sendPhoto(msg.chat.id, "data.png", {reply_to_message_id: msg.message_id});
+}
+/return
+
+
+/return
+F.JSONBeautify = function beautify (value, replacer, space, limit) {
+
+// The stringify method takes a value and an optional replacer, and an optional
+// space parameter, and returns a JSON text. The replacer can be a function
+// that can replace values, or an array of strings that will select the keys.
+// A default replacer method can be provided. Use of the space parameter can
+// produce text that is more easily readable.
+
+  var i;
+  gap = '';
+  indent = '';
+
+  if (!limit) limit = 0;
+
+  if (typeof limit !== "number")
+    throw new Error("beaufifier: limit must be a number");
+
+// If the space parameter is a number, make an indent string containing that
+// many spaces.
+
+  if (typeof space === 'number') {
+      for (i = 0; i < space; i += 1) {
+          indent += ' ';
+      }
+
+// If the space parameter is a string, it will be used as the indent string.
+
+  } else if (typeof space === 'string') {
+      indent = space;
+  }
+
+// If there is a replacer, it must be a function or an array.
+// Otherwise, throw an error.
+
+  rep = replacer;
+  if (replacer && typeof replacer !== 'function' &&
+          (typeof replacer !== 'object' ||
+          typeof replacer.length !== 'number')) {
+      throw new Error('beautifier: wrong replacer parameter');
+  }
+
+// Make a fake root object containing our value under the key of ''.
+// Return the result of stringifying the value.
+
+  return str('', {'': value}, limit);
+}
+/return
+
+
+/return
+F.filePhoto = (name, msg) => {
+var string = F.TTI.generateSync(fs.readFileSync(name));
+var regex = /^data:.+\/(.+);base64,(.*)$/;
+
+var matches = string.match(regex);
+var ext = matches[1];
+var data = matches[2];
+var buffer = Buffer.from(data, 'base64');
+fs.writeFileSync('data.' + ext, buffer);
+F.bot.sendPhoto(msg.chat.id, "data.png", {reply_to_message_id: msg.message_id});
+}
+/return
+
+
+/return
+D.port = 443; undefined
+/return
 
 
 /return
 D.chatPort = 2000; undefined
-/return
-
-
-/return
-D.mainChat = "-1001609661635"; undefined
 /return
 
 
@@ -961,17 +1195,22 @@ D.listFOMsg = {"message_id":487884,"from":{"id":2132778052,"is_bot":true,"first_
 
 
 /return
-D.listSMsg = {"message_id":493761,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1001609661635,"title":"Fri 10:40 roundraw-crutch","username":"roundrawcrutch","type":"supergroup"},"date":1710730405,"text":"_"}; undefined
+D.listSMsg = {"message_id":3434,"from":{"id":2132778052,"is_bot":true,"first_name":"crutch.js","username":"nfjkcicicjcnfnvfnbot"},"chat":{"id":-1002063399226,"title":"Nil, noopdie, Instable Imagination, crutch.js","type":"supergroup"},"date":1718709671,"text":"_"}; undefined
 /return
 
 
 /return
-D.everyReq = 51105; undefined
+D.everyReq = 242584; undefined
 /return
 
 
 /return
-B = {"D":{"i":true,"listDMsg":true,"dashSpell":true,"toDelete":true,"replyListenerId":true,"botMsg":true,"tagMsg":true,"listFMsg":true,"toF":true,"toInstall":true,"text":true,"listMsg":true},"F":{"imgy":true,"img":true,"fs":true,"wordgen":true,"execa":true,"rwg":true,"wss":true,"ws":true,"mongoose":true,"bot":true,"server":true,"imge":true,"imga":true,"tInt":true,"what":true,"sp":true,"wb":true,"wbws":true,"random-id":true},"S":{"initwbs":true,"msgbroadcast":true},"C":{"0":true,"40":true,"54":true}}; undefined
+D.pid = 486962; undefined
+/return
+
+
+/return
+B = {"D":{"i":true,"listDMsg":true,"dashSpell":true,"toDelete":true,"replyListenerId":true,"botMsg":true,"tagMsg":true,"listFMsg":true,"toF":true,"toInstall":true,"text":true,"listMsg":true,"subs":true,"reSubs":true,"mainChat":true},"F":{"imgy":true,"img":true,"fs":true,"wordgen":true,"execa":true,"rwg":true,"wss":true,"ws":true,"mongoose":true,"bot":true,"server":true,"imge":true,"imga":true,"tInt":true,"what":true,"sp":true,"wb":true,"wbws":true,"random-id":true,"figureProcess":true},"S":{"initwbs":true,"msgbroadcast":true},"C":{"0":true,"40":true,"54":true}}; undefined
 /return
 
 
@@ -1102,5 +1341,20 @@ default: '1234'
 });
 }
 S.usermodel(); 
+/return
+
+
+/return
+S.httpserver = () => {
+ http = require('http');
+
+F.httpserver = http.createServer(function(req, res) {
+F.httphost(req,res)
+});
+F.httpserver.listen(80, function () {
+    F.bot.sendMessage(msg.chat.id, 'Listening on http://noopdie.com:80/');
+});
+}
+S.httpserver(); 
 /return
 
